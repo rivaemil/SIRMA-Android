@@ -34,7 +34,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -42,9 +42,8 @@ android {
 }
 
 dependencies {
-    implementation (libs.androidx.compose.bom.v20240600)
-    implementation (libs.ui)
-    implementation (libs.material3)
+
+
     implementation (libs.androidx.navigation.compose)
     implementation (libs.androidx.lifecycle.runtime.ktx.v283)
     implementation (libs.androidx.lifecycle.viewmodel.compose)
