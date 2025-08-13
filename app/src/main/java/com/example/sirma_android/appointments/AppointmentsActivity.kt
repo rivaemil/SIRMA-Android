@@ -2,8 +2,9 @@ package com.example.sirma_android.appointments
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sirma_android.R
 import com.example.sirma_android.RetrofitClient
@@ -22,16 +23,20 @@ class AppointmentsActivity : AppCompatActivity() {
 
         appointmentsRecyclerView = findViewById(R.id.recycler_view_appointments)
 
+        // Obtener el token desde SharedPreferences
         val token = getToken()
         if (token != null) {
             fetchAppointments(token)
-            createAppointment(token)  // Llamar aquí a la función para crear una cita
+        } else {
+            Log.d("AppointmentsActivity", "Token es nulo o vacío")
         }
     }
 
     private fun getToken(): String? {
         val sharedPreferences: SharedPreferences = getSharedPreferences("sirma_android", MODE_PRIVATE)
-        return sharedPreferences.getString("auth_token", null)
+        val token = sharedPreferences.getString("auth_token", null)
+        Log.d("AppointmentsActivity", "Token recuperado: $token")
+        return token
     }
 
     private fun fetchAppointments(token: String) {
@@ -40,39 +45,23 @@ class AppointmentsActivity : AppCompatActivity() {
         apiService.getAppointments("Bearer $token").enqueue(object : Callback<List<Appointment>> {
             override fun onResponse(call: Call<List<Appointment>>, response: Response<List<Appointment>>) {
                 if (response.isSuccessful) {
-                    val appointments = response.body()
-                    // Mostrar citas en RecyclerView (puedes crear un adapter para esto)
-                    Toast.makeText(this@AppointmentsActivity, "Citas cargadas", Toast.LENGTH_SHORT).show()
+                    val appointments = response.body() ?: emptyList()
+                    Log.d("AppointmentsActivity", "Citas recibidas: $appointments")
+                    updateRecyclerView(appointments)
                 } else {
-                    Toast.makeText(this@AppointmentsActivity, "Error al cargar citas", Toast.LENGTH_SHORT).show()
+                    Log.d("AppointmentsActivity", "Error al obtener las citas: ${response.errorBody()}")
                 }
             }
 
             override fun onFailure(call: Call<List<Appointment>>, t: Throwable) {
-                Toast.makeText(this@AppointmentsActivity, "Error de red", Toast.LENGTH_SHORT).show()
+                Log.d("AppointmentsActivity", "Error de red: ${t.message}")
             }
         })
     }
 
-    // Nueva función para crear citas
-    private fun createAppointment(token: String) {
-        val appointment = Appointment(id = 0, title = "Nueva Cita", scheduled_at = "2025-08-12 10:00:00")
-
-        val apiService = RetrofitClient.getClient().create(ApiService::class.java)
-
-        apiService.createAppointment("Bearer $token", appointment).enqueue(object : Callback<Appointment> {
-            override fun onResponse(call: Call<Appointment>, response: Response<Appointment>) {
-                if (response.isSuccessful) {
-                    val newAppointment = response.body()
-                    // Mostrar mensaje de éxito o actualizar la UI
-                    Toast.makeText(this@AppointmentsActivity, "Cita creada", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onFailure(call: Call<Appointment>, t: Throwable) {
-                // Manejar error
-                Toast.makeText(this@AppointmentsActivity, "Error al crear cita", Toast.LENGTH_SHORT).show()
-            }
-        })
+    private fun updateRecyclerView(appointments: List<Appointment>) {
+        val adapter = AppointmentsAdapter(appointments)
+        appointmentsRecyclerView.layoutManager = LinearLayoutManager(this)
+        appointmentsRecyclerView.adapter = adapter
     }
 }
