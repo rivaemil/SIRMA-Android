@@ -44,6 +44,11 @@ android {
 dependencies {
 
 
+
+
+    implementation (libs.retrofit2.retrofit.v290)
+    implementation (libs.converter.gson)
+
     implementation (libs.androidx.navigation.compose)
     implementation (libs.androidx.lifecycle.runtime.ktx.v283)
     implementation (libs.androidx.lifecycle.viewmodel.compose)
@@ -55,6 +60,8 @@ dependencies {
     implementation (libs.moshi.kotlin)
 
     implementation (libs.androidx.datastore.preferences)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.recyclerview)
 
     coreLibraryDesugaring (libs.desugar.jdk.libs)
     implementation(libs.androidx.core.ktx)
