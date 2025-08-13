@@ -1,22 +1,29 @@
+// data/ApiService.kt
 package com.example.sirma_android.data
-// data/remote/ApiService.kt
-import com.example.sirma_android.data.*
+
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.*
 
 interface ApiService {
-
-    // Iniciar sesión
     @POST("login")
     suspend fun login(@Body body: Map<String, String>): AuthResponse
 
-    // Obtener citas del cliente (ya filtrado por el backend)
     @GET("my-appointments")
     suspend fun getMyAppointments(
-        @Query("desde") desde: String? = null, // formato: "YYYY-MM-DD"
-        @Query("hasta") hasta: String? = null  // formato: "YYYY-MM-DD"
+        @Query("desde") desde: String?,
+        @Query("hasta") hasta: String?
     ): List<AppointmentDto>
 
-    // Obtener detalles de una cita (solo lectura)
     @GET("appointments/{id}")
     suspend fun getAppointment(@Path("id") id: Long): AppointmentDto
+}
+
+// Nueva función para crear la instancia de Retrofit
+fun provideApiService(): ApiService {
+    return Retrofit.Builder()
+        .baseUrl("http://192.168.100.7:8000/api/")  // O tu URL real aquí
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+        .create(ApiService::class.java)
 }

@@ -1,3 +1,4 @@
+// ui/login/LoginScreen.kt
 package com.example.sirma_android.login
 
 import androidx.compose.foundation.layout.*
@@ -6,12 +7,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.sirma_android.data.AuthStore
-import com.example.sirma_android.data.AppointmentRepository
+import androidx.navigation.NavController
 
 @Composable
 fun LoginScreen(
-    vm: LoginViewModel,
+    vm: LoginViewModel,  // El ViewModel recibido como parámetro
+    navController: NavController,
     onSuccess: () -> Unit
 ) {
     val state by vm.state.collectAsState()
@@ -19,7 +20,10 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
 
     LaunchedEffect(state) {
-        if (state is LoginState.Success) onSuccess() // Navegar a citas
+        if (state is LoginState.Success) {
+            // Llama a onSuccess después de un login exitoso
+            onSuccess()  // Esto dispara la navegación a "appointments"
+        }
     }
 
     Column(Modifier.fillMaxSize().padding(16.dp)) {
