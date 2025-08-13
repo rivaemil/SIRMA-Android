@@ -12,8 +12,9 @@ import retrofit2.http.POST
 interface ApiService {
 
     // Ruta para login
-    @POST("login")
-    fun login(@Body loginRequest: LoginRequest): Call<LoginResponse>
+
+        @POST("login")
+        fun login(@Body body: LoginRequest): Call<LoginResponse>
 
     // Ruta para obtener las citas del usuario
     @GET("my-appointments")  // Ruta correcta según el backend

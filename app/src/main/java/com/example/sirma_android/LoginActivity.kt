@@ -23,55 +23,45 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val emailEditText = findViewById<EditText>(R.id.editTextEmail)
-        val passwordEditText = findViewById<EditText>(R.id.editTextPassword)
-        val loginButton = findViewById<Button>(R.id.buttonLogin)
+        val emailEt = findViewById<EditText>(R.id.editTextEmail)
+        val passEt  = findViewById<EditText>(R.id.editTextPassword)
+        val btn     = findViewById<Button>(R.id.buttonLogin)
 
-        loginButton.setOnClickListener {
-            val email = emailEditText.text.toString()
-            val password = passwordEditText.text.toString()
+        btn.setOnClickListener {
+            val email = emailEt.text.toString().trim()
+            val password = passEt.text.toString()
 
-            if (email.isNotEmpty() && password.isNotEmpty()) {
-                val loginRequest = LoginRequest(email, password)
-
-                val apiService = RetrofitClient.getClient().create(ApiService::class.java)
-
-                apiService.login(loginRequest).enqueue(object : Callback<LoginResponse> {
-                    override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                        if (response.isSuccessful) {
-                            val token = response.body()?.token
-                            if (!token.isNullOrEmpty()) {
-                                saveToken(token.trim())  // Guardamos el token
-                                Log.d("LoginActivity", "Token guardado correctamente: $token")
-
-                                // Redirigir a AppointmentsActivity
-                                val intent = Intent(this@LoginActivity, AppointmentsActivity::class.java)
-                                startActivity(intent)
-                                finish()  // Finalizamos LoginActivity para que no regrese
-                            } else {
-                                Log.d("LoginActivity", "Token es nulo o vacío")
-                            }
-                        } else {
-                            Log.d("LoginActivity", "Error al recibir el token: ${response.errorBody()?.string()}")
-                            Toast.makeText(this@LoginActivity, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-
-                    override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                        Log.d("LoginActivity", "Error de red: ${t.message}")
-                        Toast.makeText(this@LoginActivity, "Error de conexión", Toast.LENGTH_SHORT).show()
-                    }
-                })
-            } else {
-                Toast.makeText(this, "Por favor ingrese el correo y la contraseña", Toast.LENGTH_SHORT).show()
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Ingresa correo y contraseña", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            val api = RetrofitClient.getClient().create(ApiService::class.java)
+            api.login(LoginRequest(email, password)).enqueue(object : Callback<LoginResponse> {
+                override fun onResponse(call: Call<LoginResponse>, res: Response<LoginResponse>) {
+                    if (res.isSuccessful) {
+                        val token = res.body()?.token?.trim()
+                        if (!token.isNullOrEmpty()) {
+                            getSharedPreferences("sirma_android", MODE_PRIVATE)
+                                .edit().putString("auth_token", token).apply()
+
+                            startActivity(Intent(this@LoginActivity, AppointmentsActivity::class.java))
+                            finish()
+                        } else {
+                            Toast.makeText(this@LoginActivity, "Token vacío", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(this@LoginActivity, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
+                        Log.d("LoginActivity", "Error: ${res.errorBody()?.string()}")
+                    }
+                }
+                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    Toast.makeText(this@LoginActivity, "Error de conexión: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
         }
     }
-
-    // Guardar el token en SharedPreferences
-    private fun saveToken(token: String) {
-        val sharedPreferences: SharedPreferences = getSharedPreferences("sirma_android", MODE_PRIVATE)
-        sharedPreferences.edit().putString("auth_token", token).apply()
-        Log.d("LoginActivity", "Token guardado correctamente: $token")
-    }
 }
+
+
+

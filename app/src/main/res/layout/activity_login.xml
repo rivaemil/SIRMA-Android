@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:hint="Correo electrónico"
         android:inputType="textEmailAddress"
+        android:autofillHints="emailAddress"
         android:layout_marginBottom="16dp"
         android:padding="10dp" />
 
@@ -29,6 +30,7 @@
         android:layout_height="wrap_content"
         android:hint="Contraseña"
         android:inputType="textPassword"
+        android:autofillHints="password"
         android:layout_marginBottom="16dp"
         android:padding="10dp" />
 
@@ -37,5 +39,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Iniciar sesión" />
-
 </LinearLayout>
