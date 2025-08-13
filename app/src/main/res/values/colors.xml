@@ -13,5 +13,27 @@
     <color name="teal_200">#640E19</color>
     <color name="teal_700">#1B1010</color>
 
+        <!-- Fondo -->
+        <color name="bg_start">#1A0E0E</color>   <!-- vino oscuro -->
+        <color name="bg_end">#0E0707</color>     <!-- casi negro rojizo -->
+
+        <!-- Tarjeta / inputs -->
+        <color name="card_bg">#231616</color>
+        <color name="input_bg">#2C1C1C</color>
+        <color name="stroke_dim">#3A2626</color>
+
+        <!-- Texto -->
+        <color name="text_primary">#F3EDED</color>
+        <color name="text_secondary">#C9BDBD</color>
+        <color name="hint_color">#A48E8E</color>
+
+        <!-- Marca -->
+        <color name="brand_red">#D32F2F</color>
+        <color name="brand_red_pressed">#B71C1C</color>
+        <color name="brand_red_disabled">#553333</color>
+
+        <!-- Misceláneo -->
+
+
 
 </resources>
