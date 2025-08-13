@@ -43,7 +43,7 @@ android {
 
 dependencies {
 
-
+    implementation (libs.androidx.cardview)
     implementation (libs.androidx.appcompat.v170)
     implementation (libs.material)
 

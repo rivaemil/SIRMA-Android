@@ -1,6 +1,7 @@
 [versions]
 agp = "8.10.1"
 androidxAppcompat = "1.7.0"
+cardview = "1.0.0"
 composeBomVersion = "2025.07.00"
 converterGson = "2.9.0"
 converterMoshi = "2.11.0"
@@ -29,6 +30,7 @@ recyclerview = "1.4.0"
 
 [libraries]
 androidx-appcompat-v170 = { module = "androidx.appcompat:appcompat", version.ref = "androidxAppcompat" }
+androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
 androidx-compose-bom-v20240600 = { module = "androidx.compose:compose-bom", version.ref = "composeBomVersion" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
